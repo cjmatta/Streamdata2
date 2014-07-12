@@ -54,7 +54,7 @@ var getFlow = function() {
 
 var getSedimentPPM = function () {
 	return randomFloat(0.05, 2);
-}
+
 
 var getPSI = function () {
 	return randomInt(75, 100);
