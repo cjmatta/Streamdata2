@@ -1,0 +1,24 @@
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>PumpID</th>
+			<th>HZ</th>
+			<th>Displacement</th>
+			<th>Flow</th>
+			<th>SedimentPPM</th>
+			<th>PSI</th>
+			<th>ChlorinepPM</th>
+		</tr>
+	</thead>
+	<tbody ng-repeat="pump in latestData">
+		<tr>
+			<td>{{pump.PumpID}}</td>
+			<td>{{pump.HZ}}</td>
+			<td>{{pump.Displacement}}</td>
+			<td>{{pump.Flow}}</td>
+			<td>{{pump.SedimentPPM}}</td>
+			<td>{{pump.PSI}}</td>
+			<td>{{pump.ChlorinepPM}}</td>
+		</tr>
+	</tbody>
+</table>
