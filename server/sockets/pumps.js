@@ -99,7 +99,6 @@ function register (socket) {
 		_getWatcher(function(monitor){
 			monitor.on("changed", _onChanged);
 		});
-	});
 
 		socket.on('pumps:close', function () {
 			monitor.stop(); // Stop Watching

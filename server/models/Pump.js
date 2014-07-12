@@ -1,49 +1,69 @@
 'use strict';
 
-var HBase = require('hbase-client'),
-	_ = require('lodash'),
-	table = null;
+var fs = require('fs'),
+	watch = require('watch'),
+	csv = require('csv'),
+	watchDir = null,
+	watchFile = 'output.csv',
+	getAll = 0;
 
-var client = HBase.create({
-	zookeeperHosts: [
-		'ip-10-230-4-141.us-west-2.compute.internal:5181',
-		'ip-10-227-68-187.us-west-2.compute.internal:5181',
-		'ip-10-230-7-91.us-west-2.compute.internal:5181'
-	],
-	// this is the actual hbase directory where the -ROOT- dir is found
-	zookeeperRoot: '/hbase'
+var parser = csv.parse({
+	columns: ['pumpID',
+			  'datetime',
+			  'hz',
+			  'displacement',
+			  'flow',
+			  'sedimentppm',
+			  'psi',
+			  'flowppm']
+	});
+
+parser.on('readable', function(data){
+	var record;
+	while(record = parser.read()){
+		totalRecords.push(record);
+		console.log(record);
+	}
+	console.log("Got " + totalRecords.length + " records.");
 });
 
-function setTable(tablename) {
-	table = tablename;
-}
+parser.on('error', function(err){
+	console.log(err);
+});
 
-function getTable() {
-	return tablename;
-}
-
-function getRow(rowname, columns, callback) {
-	var param = new HBase.Get(rowname);
-	// Add the columns
-	_.each(columns, function(column){
-		var cols = column.split(':');
-		param.addColumn(cols[0], cols[1]);
-	});
-
-	client.get(table, param, function(err, result){
-		if(err) {
-			return callback(err, null);
+function setWatchDir(dirname) {
+	fs.exists(dirname, function(exists){
+		if (!exists){
+			throw ("Directory " + dirname + " doesn't exist!");
 		}
-
-		return callback(null, result);
+		watchDir = dirname;
 	});
+}
+
+// reset the counter to get all 
+// records from the csv file.
+function getAll() {
+	getAll = 0;
+}
+
+function getParser() {
+	return parser;
+}
+
+function startWatching () {
+	return;
+}
+
+function stopWatching () {
+	return;
 }
 
 var pumps = {
-	client: client,
-	setTable: setTable,
-	getTable: getTable,
-	getRow: getRow
+	setWatchDir: setWatchDir,
+	getAll: getAll,
+	startWatching: startWatching,
+	stopWatching: stopWatching,
+	getParser: getParser
 };
 
 exports = module.exports = pumps;
